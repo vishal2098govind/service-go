@@ -10,6 +10,9 @@ import (
 	"github.com/vishal2098govind/service/foundations/logger"
 )
 
+var build = "develop"
+var buildDate = "YYYY-MM-DDTHH:MM:SSZ"
+
 func main() {
 
 	var log *logger.Logger
@@ -24,7 +27,7 @@ func main() {
 		return ""
 	}
 
-	logger := logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SALES", traceIDFn, events)
+	logger := logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SALES", traceIDFn, events, build, buildDate)
 
 	ctx := context.Background()
 

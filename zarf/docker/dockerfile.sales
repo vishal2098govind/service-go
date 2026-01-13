@@ -1,0 +1,24 @@
+# Build stage
+FROM golang:1.24.1 AS build_sales
+ENV CGO_ENABLED=0
+ARG BUILD_REF
+ARG BUILD_DATE
+COPY . /services-go
+
+WORKDIR /services-go/apis/services/sales
+
+RUN go mod download
+
+RUN go build -ldflags " \
+		-X main.build=${BUILD_REF} \
+		-X main.buildDate=${BUILD_DATE} \
+	"
+
+# Run stage
+FROM alpine
+RUN addgroup -g 1000 -S sales && \
+    adduser -u 1000 -h /services-go -G sales -S sales
+COPY --from=build_sales --chown=sales:sales /services-go/apis/services/sales/sales /services-go/sales
+WORKDIR /services-go
+USER sales
+CMD ["./sales"]

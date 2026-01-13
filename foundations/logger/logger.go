@@ -24,13 +24,13 @@ type Logger struct {
 }
 
 // New constructs a new log for application use.
-func New(w io.Writer, minLevel Level, serviceName string, traceIDFn TraceIDFn) *Logger {
-	return new(w, minLevel, serviceName, traceIDFn, Events{})
+func New(w io.Writer, minLevel Level, serviceName string, traceIDFn TraceIDFn, build string, buildDate string) *Logger {
+	return new(w, minLevel, serviceName, traceIDFn, Events{}, build, buildDate)
 }
 
 // NewWithEvents constructs a new log for application use with events.
-func NewWithEvents(w io.Writer, minLevel Level, serviceName string, traceIDFn TraceIDFn, events Events) *Logger {
-	return new(w, minLevel, serviceName, traceIDFn, events)
+func NewWithEvents(w io.Writer, minLevel Level, serviceName string, traceIDFn TraceIDFn, events Events, build string, buildDate string) *Logger {
+	return new(w, minLevel, serviceName, traceIDFn, events, build, buildDate)
 }
 
 // NewWithHandler returns a new log for application use with the underlying
@@ -104,7 +104,7 @@ func (log *Logger) write(ctx context.Context, level Level, caller int, msg strin
 	log.handler.Handle(ctx, r)
 }
 
-func new(w io.Writer, minLevel Level, serviceName string, traceIDFn TraceIDFn, events Events) *Logger {
+func new(w io.Writer, minLevel Level, serviceName string, traceIDFn TraceIDFn, events Events, build string, buildDate string) *Logger {
 
 	// Convert the file name to just the name.ext when this key/value will
 	// be logged.
@@ -131,6 +131,8 @@ func new(w io.Writer, minLevel Level, serviceName string, traceIDFn TraceIDFn, e
 	// Attributes to add to every log.
 	attrs := []slog.Attr{
 		{Key: "service", Value: slog.StringValue(serviceName)},
+		{Key: "build", Value: slog.StringValue(build)},
+		{Key: "build_date", Value: slog.StringValue(buildDate)},
 	}
 
 	// Add those attributes and capture the final handler.
