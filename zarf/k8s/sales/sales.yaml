@@ -22,5 +22,15 @@ spec:
         - name: sales
           image: vishalgovind/sales
           imagePullPolicy: Never
----
-
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "36Mi"
+            limits:
+              cpu: "250m"
+              memory: "36Mi"
+          env:
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu # this is converted to decimal and rounded off by k8s using ceil
