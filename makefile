@@ -20,6 +20,9 @@ build-sales:
 dev-apply-sales:
 	kubectl apply -f ./zarf/k8s/sales/sales.yaml
 
+dev-restart:
+	kubectl rollout restart deployment sales
+
 dev-logs:
 	kubectl logs --selector app=sales --all-containers=true --tail=100 --max-log-requests=6
 

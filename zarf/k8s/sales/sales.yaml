@@ -34,3 +34,20 @@ spec:
               valueFrom:
                 resourceFieldRef:
                   resource: limits.cpu # this is converted to decimal and rounded off by k8s using ceil
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sales
+  namespace: sales
+spec:
+  selector:
+    app: sales
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+
+---
+
