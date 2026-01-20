@@ -8,6 +8,9 @@ run-sales:
 	" && \
 	./sales
 
+help-sales:
+	cd ./apis/services/sales && \
+	go run main.go --help
 
 build-sales:
 	docker build \

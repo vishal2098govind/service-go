@@ -94,8 +94,12 @@ func run(ctx context.Context, log *logger.Logger) error {
 	})
 
 	api := http.Server{
-		Addr:    cfg.Web.APIHost,
-		Handler: mux,
+		Addr:         cfg.Web.APIHost,
+		Handler:      mux,
+		ReadTimeout:  cfg.Web.ReadTimeout,
+		WriteTimeout: cfg.Web.WriteTimeout,
+		IdleTimeout:  cfg.Web.IdleTimeout,
+		ErrorLog:     logger.NewStdLogger(log, logger.LevelError),
 	}
 
 	serverError := make(chan error, 1)
