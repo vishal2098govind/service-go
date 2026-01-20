@@ -20,6 +20,9 @@ build-sales:
 		--build-arg BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
 		.
 
+curl-test:
+	curl -i -X GET http://localhost:3000/test
+
 dev-apply-sales:
 	kubectl apply -f ./zarf/k8s/sales/sales.yaml
 

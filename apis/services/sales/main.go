@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/ardanlabs/conf/v3"
+	"github.com/vishal2098govind/service/apis/services/sales/mux"
 	"github.com/vishal2098govind/service/foundations/logger"
 )
 
@@ -85,17 +86,9 @@ func run(ctx context.Context, log *logger.Logger) error {
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
 
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Info(ctx, "request", "host", r.Host)
-		s := "OK"
-		w.Write([]byte(s))
-	})
-
 	api := http.Server{
 		Addr:         cfg.Web.APIHost,
-		Handler:      mux,
+		Handler:      mux.WebAPI(),
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
 		IdleTimeout:  cfg.Web.IdleTimeout,
