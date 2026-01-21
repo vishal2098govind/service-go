@@ -12,16 +12,31 @@ type Handler func(ctx context.Context, w http.ResponseWriter, r *http.Request) e
 type App struct {
 	*http.ServeMux
 	shutdown chan os.Signal
+	mids     []MidHandler
 }
 
-func NewApp(shutdown chan os.Signal) *App {
+func NewApp(shutdown chan os.Signal, mids ...MidHandler) *App {
 	return &App{
 		ServeMux: http.NewServeMux(),
 		shutdown: shutdown,
+		mids:     mids,
 	}
 }
 
-func (a *App) HandleFunc(pattern string, handler Handler) {
+func (a *App) HandleFunc(pattern string, handler Handler, mids ...MidHandler) {
+	handler = wrapMiddlewares(handler, mids...)
+	handler = wrapMiddlewares(handler, a.mids...)
+
+	// mw := func(handler Handler) Handler {
+	// 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	// 		// middle-ware specific
+	// 		err := handler(ctx, w, r)
+	// 		// middle-ware specific
+	// 		return err
+	// 	}
+	// }
+
+	// handler = mw(handler)
 
 	h := func(w http.ResponseWriter, r *http.Request) {
 
