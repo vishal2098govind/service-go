@@ -33,12 +33,12 @@ func main() {
 		return web.GetTraceID(ctx)
 	}
 
-	logger := logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SALES", traceIDFn, events, build, buildDate)
+	log = logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SALES", traceIDFn, events, build, buildDate)
 
 	ctx := context.Background()
 
-	if err := run(ctx, logger); err != nil {
-		logger.Error(ctx, "startup", "msg", err)
+	if err := run(ctx, log); err != nil {
+		log.Error(ctx, "startup", "msg", err)
 		os.Exit(1)
 	}
 }

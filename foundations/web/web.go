@@ -27,8 +27,8 @@ func NewApp(shutdown chan os.Signal, mids ...MidHandler) *App {
 }
 
 func (a *App) HandleFunc(pattern string, handler Handler, mids ...MidHandler) {
-	handler = wrapMiddlewares(handler, mids...)
 	handler = wrapMiddlewares(handler, a.mids...)
+	handler = wrapMiddlewares(handler, mids...)
 
 	h := func(w http.ResponseWriter, r *http.Request) {
 

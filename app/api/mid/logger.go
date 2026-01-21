@@ -7,8 +7,6 @@ import (
 	"github.com/vishal2098govind/service/foundations/logger"
 )
 
-type Handler func(context.Context) error
-
 // this logger middleware is protocol agnostic
 func Logger(ctx context.Context, log *logger.Logger, path string, rawQuery string, method string, remoteAddress string, handler Handler) error {
 

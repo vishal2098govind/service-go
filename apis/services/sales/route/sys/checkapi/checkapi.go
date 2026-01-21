@@ -2,6 +2,7 @@ package checkapi
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/vishal2098govind/service/foundations/web"
@@ -25,4 +26,8 @@ func readiness(ctx context.Context, w http.ResponseWriter, r *http.Request) erro
 	}
 
 	return web.Respond(ctx, w, resp, http.StatusOK)
+}
+
+func testerror(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	return fmt.Errorf("error")
 }
