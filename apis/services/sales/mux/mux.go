@@ -1,24 +1,15 @@
 package mux
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/vishal2098govind/service/apis/services/sales/route/sys/checkapi"
 )
 
 func WebAPI() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	h := func(w http.ResponseWriter, r *http.Request) {
-		resp := struct {
-			Status string
-		}{
-			Status: "OK",
-		}
-
-		json.NewEncoder(w).Encode(resp)
-	}
-
-	mux.HandleFunc("/test", h)
+	checkapi.Routes(mux)
 
 	return mux
 }
