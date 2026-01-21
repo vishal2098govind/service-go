@@ -10,8 +10,9 @@ type ctxKey int
 const key ctxKey = 1
 
 type Value struct {
-	TraceID string
-	Now     time.Time
+	TraceID    string
+	Now        time.Time
+	StatusCode int
 }
 
 func GetValue(ctx context.Context) *Value {
@@ -29,6 +30,12 @@ func GetValue(ctx context.Context) *Value {
 func GetTraceID(ctx context.Context) string {
 	v := GetValue(ctx)
 	return v.TraceID
+}
+
+func setStatusCode(ctx context.Context, statusCode int) {
+	v := GetValue(ctx)
+	v.StatusCode = statusCode
+	setValues(ctx, v)
 }
 
 func setValues(ctx context.Context, value *Value) context.Context {
