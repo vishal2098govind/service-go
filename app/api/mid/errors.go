@@ -3,6 +3,7 @@ package mid
 import (
 	"context"
 
+	"github.com/vishal2098govind/service/app/api/errs"
 	"github.com/vishal2098govind/service/foundations/logger"
 )
 
@@ -16,5 +17,9 @@ func Errors(ctx context.Context, log *logger.Logger, handler Handler) error {
 
 	log.Error(ctx, "ERROR", "error", err.Error())
 
-	return err
+	if errs.IsError(err) {
+		return errs.GetError(err)
+	}
+
+	return errs.New(errs.Unknown, errs.Unknown.String())
 }

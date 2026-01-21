@@ -43,6 +43,7 @@ func (a *App) HandleFunc(pattern string, handler Handler, mids ...MidHandler) {
 		// calling handler makes the incoming request pass through all the middlewares if any, and then pass through the original handler
 		if err := handler(ctx, w, r); err != nil {
 			// CAN HANDLER ERROR HERE
+			// ideally, we should rarely be reaching here, given the Errors middleware is used
 			fmt.Println(err)
 		}
 
