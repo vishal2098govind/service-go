@@ -1,2 +1,4 @@
 github.com/ardanlabs/conf/v3 v3.10.0 h1:qIrJ/WBmH/hFQ/IX4xH9LX9LzwK44T9aEOy78M+4S+0=
 github.com/ardanlabs/conf/v3 v3.10.0/go.mod h1:XlL9P0quWP4m1weOVFmlezabinbZLI05niDof/+Ochk=
+github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

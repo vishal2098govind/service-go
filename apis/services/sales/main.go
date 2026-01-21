@@ -13,6 +13,7 @@ import (
 	"github.com/ardanlabs/conf/v3"
 	"github.com/vishal2098govind/service/apis/services/sales/mux"
 	"github.com/vishal2098govind/service/foundations/logger"
+	"github.com/vishal2098govind/service/foundations/web"
 )
 
 var build = "develop"
@@ -29,7 +30,7 @@ func main() {
 	}
 
 	traceIDFn := func(ctx context.Context) string {
-		return ""
+		return web.GetTraceID(ctx)
 	}
 
 	logger := logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SALES", traceIDFn, events, build, buildDate)

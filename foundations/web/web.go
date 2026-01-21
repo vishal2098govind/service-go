@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type Handler func(ctx context.Context, w http.ResponseWriter, r *http.Request) error
@@ -27,22 +30,18 @@ func (a *App) HandleFunc(pattern string, handler Handler, mids ...MidHandler) {
 	handler = wrapMiddlewares(handler, mids...)
 	handler = wrapMiddlewares(handler, a.mids...)
 
-	// mw := func(handler Handler) Handler {
-	// 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	// 		// middle-ware specific
-	// 		err := handler(ctx, w, r)
-	// 		// middle-ware specific
-	// 		return err
-	// 	}
-	// }
-
-	// handler = mw(handler)
-
 	h := func(w http.ResponseWriter, r *http.Request) {
 
 		// CAN PUT SOME CODE HERE
+		// can include trace here to the context as this is from where the request starts
+		// this is the first point of contact of the request with the service
+		ctx := setValues(r.Context(), &Value{
+			TraceID: uuid.NewString(),
+			Now:     time.Now().UTC(),
+		})
 
-		if err := handler(r.Context(), w, r); err != nil {
+		// calling handler makes the incoming request pass through all the middlewares if any, and then pass through the original handler
+		if err := handler(ctx, w, r); err != nil {
 			// CAN HANDLER ERROR HERE
 			fmt.Println(err)
 		}
