@@ -20,6 +20,11 @@ import (
 
 func main() {
 
+	err := GenKey()
+	if err != nil {
+		log.Fatalf("failed to gen key pair: %v", err)
+	}
+
 	ks := keystore.New()
 	ks.LoadKeys(os.DirFS("zarf/keys/"))
 
@@ -28,7 +33,7 @@ func main() {
 
 	token, err := GenToken(ks, kid)
 	if err != nil {
-		log.Fatalf("failed to gen key pair: %v", err)
+		log.Fatalf("failed to gen token: %v", err)
 	}
 	err = ValidateTokenOPA(ks, token)
 	if err != nil {

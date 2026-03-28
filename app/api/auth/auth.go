@@ -32,13 +32,13 @@ type KeyLookup interface {
 	PublicKeyPEM(kid string) (key string, err error)
 }
 
-func New(cfg Config) Auth {
-	return Auth{
+func New(cfg Config) (*Auth, error) {
+	return &Auth{
 		keyLookup:     cfg.KeyLookup,
 		issuer:        cfg.Issuer,
 		signingMethod: jwt.GetSigningMethod(jwt.SigningMethodRS256.Name),
 		jwtParser:     jwt.NewParser(jwt.WithValidMethods([]string{jwt.SigningMethodRS256.Name})),
-	}
+	}, nil
 }
 
 func (a *Auth) GenerateToken(kid string, claims Claims) (string, error) {
@@ -68,6 +68,8 @@ func (a *Auth) GenerateToken(kid string, claims Claims) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(a.signingMethod, claims)
+
+	token.Header["kid"] = kid
 
 	tokenStr, err := token.SignedString(privateKey)
 	if err != nil {
