@@ -1,4 +1,4 @@
-package mid
+package middlewares
 
 import (
 	"context"

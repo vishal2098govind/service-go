@@ -34,3 +34,7 @@ dev-logs:
 
 dev-status:
 	watch kubectl get pods -o wide --all-namespaces --show-labels
+
+# generate RSA private key: openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048
+# generate RSA public key: openssl rsa -pubout -in private.pem -out public.pem
+# generate RSA key pair: go run cmd/rsa-kpg/main.go

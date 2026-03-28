@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/vishal2098govind/service/app/api/errs"
-	"github.com/vishal2098govind/service/app/api/mid"
+	mid "github.com/vishal2098govind/service/app/api/middlewares"
 	"github.com/vishal2098govind/service/foundations/logger"
 	"github.com/vishal2098govind/service/foundations/web"
 )

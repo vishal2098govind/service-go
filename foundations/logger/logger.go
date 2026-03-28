@@ -56,6 +56,11 @@ func (log *Logger) Debugc(ctx context.Context, caller int, msg string, args ...a
 
 // Info logs at LevelInfo with the given context.
 func (log *Logger) Info(ctx context.Context, msg string, args ...any) {
+	// caller = 3 since we want to skip stack frames of
+	// - this function i.e. log.Info - 2th stack frame
+	// - the write function i.e. log.write - 1th stack frame
+	// - and the runtime.Caller function as well - 0th stack frame
+	// so total 3 stack frames to be skipped. Thus passing 3.
 	log.write(ctx, LevelInfo, 3, msg, args...)
 }
 
