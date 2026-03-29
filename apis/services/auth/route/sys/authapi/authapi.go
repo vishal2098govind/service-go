@@ -3,11 +3,10 @@ package authapi
 import (
 	"context"
 	"net/http"
-	"time"
 
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/vishal2098govind/service/app/api/auth"
 	"github.com/vishal2098govind/service/app/api/errs"
+	"github.com/vishal2098govind/service/app/api/middlewares"
 	"github.com/vishal2098govind/service/foundations/logger"
 	"github.com/vishal2098govind/service/foundations/web"
 )
@@ -24,15 +23,9 @@ func newAPI(auth *auth.Auth, log *logger.Logger) api {
 func (api *api) generateToken(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	kid := r.PathValue("kid")
 
-	claims := auth.Claims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    api.auth.Issuer,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-			Audience:  jwt.ClaimStrings{"sales"},
-			Subject:   "4fc800d4-2c3d-45fc-a0fa-9263644f6de7",
-		},
-		Roles: []string{"USER"},
+	claims, err := middlewares.GetClaims(ctx)
+	if err != nil {
+		return errs.New(errs.Internal, "claims not found")
 	}
 
 	token, err := api.auth.GenerateToken(kid, claims)
