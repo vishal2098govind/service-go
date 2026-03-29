@@ -135,6 +135,6 @@ func (a *Auth) Authenticate(token string) (Claims, error) {
 	return claims, nil
 }
 
-func (a *Auth) Authorize(claims Claims) {
-
+func (a *Auth) Authorize(claims Claims) bool {
+	return true
 }

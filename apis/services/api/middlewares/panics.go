@@ -1,10 +1,10 @@
-package mid
+package middlewares
 
 import (
 	"context"
 	"net/http"
 
-	mid "github.com/vishal2098govind/service/app/api/middlewares"
+	"github.com/vishal2098govind/service/app/api/middlewares"
 	"github.com/vishal2098govind/service/foundations/logger"
 	"github.com/vishal2098govind/service/foundations/web"
 )
@@ -16,7 +16,7 @@ func Panics(log *logger.Logger) web.MidHandler {
 				return handler(ctx, w, r)
 			}
 
-			return mid.Panics(ctx, log, hld)
+			return middlewares.Panics(ctx, log, hld)
 		}
 	}
 }

@@ -54,7 +54,7 @@ func GenToken(ks keystore.KeyStore, kid string) (string, error) {
 
 	claims := CustomClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   "vishal-user-id",
+			Subject:   "4fc800d4-2c3d-45fc-a0fa-9263644f6de7",
 			Issuer:    "services-go service",
 			ExpiresAt: jwt.NewNumericDate(time.Now().UTC().Add(time.Hour)),
 			NotBefore: jwt.NewNumericDate(time.Now().UTC()),

@@ -1,10 +1,10 @@
-package mid
+package middlewares
 
 import (
 	"context"
 	"net/http"
 
-	mid "github.com/vishal2098govind/service/app/api/middlewares"
+	"github.com/vishal2098govind/service/app/api/middlewares"
 	"github.com/vishal2098govind/service/foundations/logger"
 	"github.com/vishal2098govind/service/foundations/web"
 )
@@ -16,7 +16,7 @@ func Logger(log *logger.Logger) web.MidHandler {
 			hdl := func(ctx context.Context) error {
 				return handler(ctx, w, r)
 			}
-			return mid.Logger(ctx, log, r.URL.Path, r.URL.RawQuery, r.Method, r.RemoteAddr, hdl)
+			return middlewares.Logger(ctx, log, r.URL.Path, r.URL.RawQuery, r.Method, r.RemoteAddr, hdl)
 		}
 	}
 }

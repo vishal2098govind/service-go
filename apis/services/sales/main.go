@@ -12,6 +12,8 @@ import (
 
 	"github.com/ardanlabs/conf/v3"
 	"github.com/vishal2098govind/service/apis/services/sales/mux"
+	"github.com/vishal2098govind/service/app/api/auth"
+	"github.com/vishal2098govind/service/foundations/keystore"
 	"github.com/vishal2098govind/service/foundations/logger"
 	"github.com/vishal2098govind/service/foundations/web"
 )
@@ -58,6 +60,10 @@ func run(ctx context.Context, log *logger.Logger) error {
 			DebugHost          string        `conf:"default:0.0.0.0:3010"`
 			CORSAllowedOrigins []string      `conf:"default:*"`
 		}
+		Auth struct {
+			Issuer  string `conf:"default:services-go service"`
+			KeyPath string `conf:"default:../../../zarf/keys/"`
+		}
 	}{
 		Version: conf.Version{
 			Build: build,
@@ -87,9 +93,21 @@ func run(ctx context.Context, log *logger.Logger) error {
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
 
+	// initialize auth
+	ks := keystore.New()
+	ks.LoadKeys(os.DirFS(cfg.Auth.KeyPath))
+
+	auth, err := auth.New(auth.Config{
+		KeyLookup: &ks,
+		Issuer:    cfg.Auth.Issuer,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to initialize auth: %w", err)
+	}
+
 	api := http.Server{
 		Addr:         cfg.Web.APIHost,
-		Handler:      mux.WebAPI(log, shutdown),
+		Handler:      mux.WebAPI(log, auth, shutdown),
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
 		IdleTimeout:  cfg.Web.IdleTimeout,
