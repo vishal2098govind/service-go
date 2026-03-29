@@ -35,7 +35,7 @@ func main() {
 		return web.GetTraceID(ctx)
 	}
 
-	log = logger.NewWithEvents(os.Stdout, logger.LevelInfo, "SALES", traceIDFn, events, build, buildDate)
+	log = logger.NewWithEvents(os.Stdout, logger.LevelDebug, "SALES", traceIDFn, events, build, buildDate)
 
 	ctx := context.Background()
 
@@ -100,6 +100,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 	auth, err := auth.New(auth.Config{
 		KeyLookup: &ks,
 		Issuer:    cfg.Auth.Issuer,
+		Log:       log,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to initialize auth: %w", err)
