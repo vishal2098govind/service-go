@@ -10,11 +10,11 @@ run-sales:
 	./sales
 
 run-auth:
-	cd ./apis/services/auth && \
-	go build -ldflags " \
+	go build -C ./apis/services/auth -ldflags " \
 		-X main.build=$(AUTH_VERSION) \
 		-X main.buildDate=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
 	" && \
+	cp ./apis/services/auth/auth . && \
 	./auth
 
 help-sales:
@@ -29,17 +29,37 @@ build-sales:
 		--build-arg BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
 		.
 
+build-auth:
+	docker build \
+		-f ./zarf/docker/dockerfile.auth \
+		-t vishalgovind/auth \
+		--build-arg BUILD_REF=$(AUTH_VERSION) \
+		--build-arg BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
+		.
+
 curl-test:
 	curl -i -X GET http://localhost:3000/test
 
 dev-apply-sales:
 	kubectl apply -f ./zarf/k8s/sales/sales.yaml
 
+dev-apply-auth:
+	kubectl apply -f ./zarf/k8s/auth/auth.yaml
+
+dev-deploy-sales: build-sales
+	kubectl rollout restart deployment/sales -n sales
+
+dev-deploy-auth: build-auth
+	kubectl rollout restart deployment/auth -n auth
+
 dev-restart:
-	kubectl rollout restart deployment sales
+	kubectl rollout restart deployment/sales -n sales
 
 dev-logs:
 	kubectl logs --selector app=sales --all-containers=true --tail=100 --max-log-requests=6
+
+dev-logs-auth:
+	kubectl logs --selector app=auth --all-containers=true --tail=100 --max-log-requests=6 -n auth
 
 dev-status:
 	watch kubectl get pods -o wide --all-namespaces --show-labels

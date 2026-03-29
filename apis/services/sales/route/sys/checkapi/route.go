@@ -12,7 +12,8 @@ func Routes(app *web.App, log *logger.Logger, ath *auth.Auth) {
 	ruleAdminOnly := auth.RuleAdminOnly
 	authorizeAdminOnly := middlewares.Authorize(log, ath, ruleAdminOnly)
 
-	app.HandleFunc("GET /liveness", liveness, authenticate, authorizeAdminOnly)
+	app.HandleFunc("GET /liveness", liveness)
+	app.HandleFunc("GET /testauth", liveness, authenticate, authorizeAdminOnly)
 	app.HandleFunc("GET /readiness", readiness)
 	app.HandleFunc("GET /testerror", testerror)
 	app.HandleFunc("GET /testpanic", testpanic)

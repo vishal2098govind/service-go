@@ -1,0 +1,25 @@
+# Build stage
+FROM golang:1.25.1 AS build_auth
+ENV CGO_ENABLED=0
+ARG BUILD_REF
+ARG BUILD_DATE
+COPY . /services-go
+
+WORKDIR /services-go/apis/services/auth
+
+RUN go mod download
+
+RUN go build -ldflags " \
+		-X main.build=${BUILD_REF} \
+		-X main.buildDate=${BUILD_DATE} \
+	"
+
+# Run stage
+FROM alpine
+RUN addgroup -g 1000 -S auth && \
+    adduser -u 1000 -h /services-go -G auth -S auth
+COPY --from=build_auth --chown=auth:auth /services-go/zarf/keys/. /services-go/zarf/keys/.
+COPY --from=build_auth --chown=auth:auth /services-go/apis/services/auth/auth /services-go/auth
+WORKDIR /services-go
+USER auth
+CMD ["./auth"]
