@@ -1,4 +1,5 @@
 SALES_VERSION := 0.0.1
+AUTH_VERSION := 0.0.1
 
 run-sales:
 	cd ./apis/services/sales && \
@@ -7,6 +8,14 @@ run-sales:
 		-X main.buildDate=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
 	" && \
 	./sales
+
+run-auth:
+	cd ./apis/services/auth && \
+	go build -ldflags " \
+		-X main.build=$(AUTH_VERSION) \
+		-X main.buildDate=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
+	" && \
+	./auth
 
 help-sales:
 	cd ./apis/services/sales && \

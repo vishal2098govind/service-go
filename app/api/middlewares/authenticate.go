@@ -9,7 +9,7 @@ import (
 	"github.com/vishal2098govind/service/foundations/logger"
 )
 
-func Authenticate(ctx context.Context, log *logger.Logger, auth *auth.Auth, authorization string, handler Handler) error {
+func Bearer(ctx context.Context, log *logger.Logger, auth *auth.Auth, authorization string, handler Handler) error {
 
 	claims, err := auth.Authenticate(authorization)
 	if err != nil {
@@ -24,6 +24,21 @@ func Authenticate(ctx context.Context, log *logger.Logger, auth *auth.Auth, auth
 	log.Info(ctx, "authenticated request", "userId", userId)
 
 	ctx = setUserID(ctx, userId)
+	ctx = setClaims(ctx, claims)
+
+	return handler(ctx)
+}
+
+func Basic(ctx context.Context, log *logger.Logger, ath *auth.Auth, username string, pass string, handler Handler) error {
+
+	claims, err := ath.Basic(username, pass)
+	if err != nil {
+		if err == auth.ErrInvalidCreds {
+			return errs.Newf(errs.InvalidArgument, "invalid credentials")
+		}
+		return errs.New(errs.Internal, "failed to authenticate user")
+	}
+
 	ctx = setClaims(ctx, claims)
 
 	return handler(ctx)

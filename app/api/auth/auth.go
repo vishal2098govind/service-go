@@ -5,8 +5,10 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
@@ -16,13 +18,15 @@ import (
 
 type Config struct {
 	Issuer    string
+	ActiveKid string
 	Log       *logger.Logger
 	KeyLookup KeyLookup
 }
 
 type Auth struct {
 	signingMethod jwt.SigningMethod
-	issuer        string
+	ActiveKid     string
+	Issuer        string
 	log           *logger.Logger
 	jwtParser     *jwt.Parser
 	keyLookup     KeyLookup
@@ -38,11 +42,16 @@ type KeyLookup interface {
 	PublicKeyPEM(kid string) (key string, err error)
 }
 
+var (
+	ErrInvalidCreds error = errors.New("invalid creds")
+)
+
 func New(cfg Config) (*Auth, error) {
 	return &Auth{
 		keyLookup:     cfg.KeyLookup,
-		issuer:        cfg.Issuer,
+		Issuer:        cfg.Issuer,
 		log:           cfg.Log,
+		ActiveKid:     cfg.ActiveKid,
 		signingMethod: jwt.GetSigningMethod(jwt.SigningMethodRS256.Name),
 		jwtParser:     jwt.NewParser(jwt.WithValidMethods([]string{jwt.SigningMethodRS256.Name})),
 	}, nil
@@ -137,6 +146,26 @@ func (a *Auth) Authenticate(token string) (Claims, error) {
 
 	if err := claims.Valid(); err != nil {
 		return Claims{}, fmt.Errorf("invalid claims")
+	}
+
+	return claims, nil
+}
+
+func (a *Auth) Basic(username string, pass string) (Claims, error) {
+	if username != "vishal" || pass != "password" {
+		return Claims{}, ErrInvalidCreds
+	}
+
+	claims := Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    a.Issuer,
+			Subject:   "4fc800d4-2c3d-45fc-a0fa-9263644f6de7",
+			ExpiresAt: jwt.NewNumericDate(time.Now().UTC().Add(time.Hour)),
+			NotBefore: jwt.NewNumericDate(time.Now().UTC()),
+		},
+		Roles: []string{
+			"ADMIN",
+		},
 	}
 
 	return claims, nil

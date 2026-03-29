@@ -8,7 +8,7 @@ import (
 )
 
 func Routes(app *web.App, log *logger.Logger, ath *auth.Auth) {
-	authenticate := middlewares.Authenticate(log, ath)
+	authenticate := middlewares.Bearer(log, ath)
 	ruleAdminOnly := auth.RuleAdminOnly
 	authorizeAdminOnly := middlewares.Authorize(log, ath, ruleAdminOnly)
 
