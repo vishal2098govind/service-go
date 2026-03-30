@@ -62,7 +62,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 		}
 		Auth struct {
 			Issuer  string `conf:"default:services-go service"`
-			KeyPath string `conf:"default:../../../zarf/keys/"`
+			KeyPath string `conf:"default:zarf/keys/"`
 		}
 	}{
 		Version: conf.Version{

@@ -18,6 +18,7 @@ RUN go build -ldflags " \
 FROM alpine
 RUN addgroup -g 1000 -S sales && \
     adduser -u 1000 -h /services-go -G sales -S sales
+COPY --from=build_sales --chown=auth:auth /services-go/zarf/keys/. /services-go/zarf/keys/.
 COPY --from=build_sales --chown=sales:sales /services-go/apis/services/sales/sales /services-go/sales
 WORKDIR /services-go
 USER sales
